@@ -54,12 +54,14 @@ export const Login = () => {
           error={Boolean(errors.email?.message)}
           helperText={errors.email?.message}
           fullWidth
+          autoComplete="off"
           {...register("email", { required: "Укажите почту!" })}
         />
         <TextField
           className={styles.field}
           label="Пароль"
           fullWidth
+          type="password"
           error={Boolean(errors.password?.message)}
           helperText={errors.password?.message}
           {...register("password", { required: "Укажите пароль!" })}

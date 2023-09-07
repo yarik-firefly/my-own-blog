@@ -6,10 +6,17 @@ import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
 import { useParams } from "react-router-dom";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { useDispatch, useSelector } from "react-redux";
+import { getOneComment } from "../redux/slices/commentsSlice";
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
+  const [item, setItem] = React.useState();
+  const [count, setCount] = React.useState(0);
+
   const [isLoading, setIsLoading] = React.useState(true);
+  const { comments } = useSelector((state) => state.comments);
+  const dispatch = useDispatch();
 
   const { id } = useParams();
 
@@ -24,7 +31,10 @@ export const FullPost = () => {
         setIsLoading(true);
         console.error(err);
       });
-  }, []);
+    dispatch(getOneComment(id));
+    setCount(comments);
+  }, [dispatch]);
+  console.log(item);
 
   if (isLoading) {
     return <Post isLoading={isLoading} isFullPost />;
@@ -36,38 +46,19 @@ export const FullPost = () => {
         id={data._id}
         title={data.title}
         imageUrl={
-          data.imageUrl
-            ? `${process.env.REACT_APP_API_URL}${data.imageUrl}`
-            : ""
+          data.imageUrl ? `${"http://localhost:4444"}${data.imageUrl}` : ""
         }
         user={data.user}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
-        commentsCount={3}
+        commentsCount={comments.length}
         tags={data.tags}
         isFullPost
       >
         <ReactMarkdown children={data.text} />
       </Post>
-      <CommentsBlock
-        items={[
-          {
-            user: {
-              fullName: "Вася Пупкин",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-            },
-            text: "Это тестовый комментарий 555555",
-          },
-          {
-            user: {
-              fullName: "Иван Иванов",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-            },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-          },
-        ]}
-        isLoading={false}
-      >
+
+      <CommentsBlock items={comments ? comments : []} isLoading={false}>
         <Index />
       </CommentsBlock>
     </>

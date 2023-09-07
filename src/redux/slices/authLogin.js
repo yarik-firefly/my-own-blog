@@ -25,6 +25,7 @@ export const authRegister = createAsyncThunk(
 const initialState = {
   data: null,
   status: "loading",
+  statusGetMe: "loading",
 };
 
 const authLoginSlice = createSlice({
@@ -51,15 +52,15 @@ const authLoginSlice = createSlice({
     //==================================================
     [getMeData.pending]: (state) => {
       state.data = null;
-      state.status = "loading";
+      state.statusGetMe = "loading";
     },
     [getMeData.fulfilled]: (state, action) => {
       state.data = action.payload;
-      state.status = "success";
+      state.statusGetMe = "success";
     },
     [getMeData.rejected]: (state) => {
       state.data = null;
-      state.status = "error";
+      state.statusGetMe = "error";
     },
     //======================================================
     [authRegister.pending]: (state) => {
